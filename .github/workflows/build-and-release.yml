@@ -27,14 +27,21 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
+        shell: bash
         run: |
           pip install --upgrade pip
           pip install pipenv
           pipenv install --system --deploy
+          # Windows環境の場合の追加パッケージ
+          if [ "${{ matrix.os }}" = "windows-latest" ]; then
+            pip install pywin32-ctypes pywin32
+          fi
 
       - name: Build executable
+        shell: bash
         run: |
-          pyinstaller src/loudness_normalize.py --onefile --clean --name loudness_normalize
+          # Windows環境でも確実に動作するようにする
+          python -m PyInstaller src/loudness_normalize.py --onefile --clean --name loudness_normalize
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

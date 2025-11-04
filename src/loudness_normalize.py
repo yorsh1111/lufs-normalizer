@@ -220,6 +220,11 @@ def parse_arguments():
         print_usage()
         sys.exit(1)
 
+    # ヘルプオプションのチェック
+    if sys.argv[1] in ['-h', '--help']:
+        print_usage()
+        sys.exit(0)
+
     input_file = sys.argv[1]
     
     # 入力ファイルの確認
