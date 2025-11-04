@@ -1,0 +1,82 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest
+            artifact_name: loudness_normalize-mac
+            output_path: dist/loudness_normalize
+          - os: windows-latest
+            artifact_name: loudness_normalize-windows.exe
+            output_path: dist/loudness_normalize.exe
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install pipenv
+          pipenv install --system --deploy
+
+      - name: Build executable
+        run: |
+          pyinstaller src/loudness_normalize.py --onefile --clean --name loudness_normalize
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: ${{ matrix.output_path }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+
+      - name: Get current date
+        id: date
+        run: echo "date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/**
+          tag_name: release-${{ steps.date.outputs.date }}
+          name: LUFS Normalizer (${{ steps.date.outputs.date }})
+          body: |
+            # LUFS Normalizer (${{ steps.date.outputs.date }})
+
+            音声ファイルをITU-R BS.1770-3準拠でラウドネス正規化するツール
+
+            ## ダウンロード
+
+            - **Mac**: loudness_normalize-mac
+            - **Windows**: loudness_normalize-windows.exe
+
+            ## 使用方法
+
+            ```
+            loudness_normalize <入力ファイル> [出力ファイル] [オプション]
+            ```
+
+            詳細は[README](https://github.com/${{ github.repository }}/blob/main/readme.md)を参照してください。
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

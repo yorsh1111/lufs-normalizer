@@ -1,5 +1,31 @@
 # 音声ファイルのラウドネス正規化ツール
 
+## インストール方法
+
+### 実行可能ファイルをダウンロードする場合
+
+最新のリリースから、ご使用の OS に合わせた実行可能ファイルをダウンロードできます：
+
+- Windows: `loudness_normalize-windows.exe`
+- macOS: `loudness_normalize-mac`
+
+[リリースページ](https://github.com/yorsh1111/lufs-normalizer/releases)から最新バージョンをダウンロードしてください。
+
+### ソースコードから実行する場合
+
+```bash
+# リポジトリをクローン
+git clone https://github.com/yorsh1111/lufs-normalizer.git
+cd lufs-normalizer
+
+# 依存関係のインストール
+pip install pipenv
+pipenv install
+
+# 実行
+pipenv run python src/loudness_normalize.py <入力ファイル> [出力ファイル] [オプション]
+```
+
 ## 使い方
 
 ```bash
@@ -96,6 +122,47 @@ python loudness_normalize.py input.wav output.wav -t -16.0 -p -1.0 -tol 0.3 -m 3
 正規化処理は目標値に到達できない場合でも、常に処理結果を出力ファイルとして保存します。処理の成否にかかわらず、出力された音声ファイルを確認し、必要に応じて再度パラメーターを調整してお試しください。
 
 ※このツールの使用によるいかなる問題や損害についても、責任を負いかねますのでご了承ください。
+
+## 開発者向け情報
+
+### リポジトリのクローンとセットアップ
+
+```bash
+git clone https://github.com/yorsh1111/lufs-normalizer.git
+cd lufs-normalizer
+pip install pipenv
+pipenv install
+```
+
+### コマンド
+
+```bash
+# コードのフォーマット
+pipenv run format
+
+# Lint
+pipenv run lint
+
+# 実行可能ファイルのビルド
+pipenv run build
+```
+
+### リリース方法
+
+このプロジェクトは GitHub Actions を使用して自動的にビルドとリリースを行います。
+
+1. `main` ブランチに変更をプッシュするだけで自動的にビルドとリリースが行われます
+
+   ```bash
+   git push origin main
+   ```
+
+2. GitHub Actions が自動的に実行され、以下のプラットフォーム用の実行可能ファイルがビルドされます：
+
+   - macOS
+   - Windows
+
+3. ビルドが完了すると、リリースページに新しいリリースが自動的に作成され、実行可能ファイルが添付されます。
 
 ## 音量調整（ラウドネス正規化）について
 
