@@ -1,0 +1,25 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+tqdm = "*"
+flake8 = "*"
+black = "*"
+librosa = "*"
+soundfile = "*"
+pyloudnorm = "*"
+numpy = "*"
+pyinstaller = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.12"
+python_full_version = "3.12.6"
+
+[scripts]
+format = "black ./src"
+lint = "flake8 ./src"
+build = "pyinstaller ./src/loudness_normalize.py --onefile --clean"

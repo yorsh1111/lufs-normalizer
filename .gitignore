@@ -1,0 +1,9 @@
+.venv
+.env
+.clinerules
+temp/**/*
+output/**/*
+logs/
+__pycache__/
+input/
+output/
